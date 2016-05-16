@@ -1,0 +1,9 @@
+{
+  "name": "nginx-serf",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "handlebars": "^4.0.5",
+    "lodash": "^4.12.0"
+  }
+}
