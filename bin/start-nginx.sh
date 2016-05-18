@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-/usr/sbin/nginx -c /etc/nginx/nginx.conf
+exec /usr/sbin/nginx -c /etc/nginx/nginx.conf

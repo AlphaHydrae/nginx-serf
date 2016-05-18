@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "glob": "^7.0.3",
     "handlebars": "^4.0.5",
+    "js-yaml": "^3.6.1",
     "lodash": "^4.12.0"
   }
 }

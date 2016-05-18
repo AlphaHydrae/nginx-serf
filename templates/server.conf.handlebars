@@ -1,0 +1,15 @@
+{{#if members}}
+upstream {{ id }}_cluster {
+  {{#each members}}
+  server {{ host }}:3000;
+  {{/each}}
+}
+{{/if}}
+
+{{#each servers}}
+server {
+  {{#each config}}
+  {{render_partial 2 this ../../this}}
+  {{/each}}
+}
+{{/each}}
