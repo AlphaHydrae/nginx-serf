@@ -28,6 +28,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     sed -i 's/^#\(prepend *domain-name-servers *127\.0\.0\.1\)/\1/' /etc/dhcp/dhclient.conf
     /etc/init.d/dnsmasq restart
 
+    apt-get install -q -y --force-yes cowsay
+
     usermod -a -G docker vagrant
     echo "cd /vagrant" >> /home/vagrant/.bash_profile
   SHELL
