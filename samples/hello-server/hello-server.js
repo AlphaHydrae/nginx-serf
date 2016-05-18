@@ -2,13 +2,14 @@
 
 var http = require('http');
 
-var hostname = '127.0.0.1';
+var hostname = process.env.HOST || '0.0.0.0';
 var port = process.env.PORT || 3000;
+var name = process.env.NAME || 'World';
 
 var server = http.createServer(function(req, res) {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World\n');
+  res.end('Hello ' + name + '!\n');
 });
 
 server.listen(port, hostname, function() {

@@ -18,5 +18,3 @@ RUN mkdir /opt/bin && \
     gunzip -c /tmp/serf.gz > /opt/bin/serf && \
     chmod 755 /opt/bin/serf && \
     rm -f /tmp/serf.gz
-
-CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]

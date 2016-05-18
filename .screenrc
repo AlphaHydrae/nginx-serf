@@ -1,0 +1,8 @@
+source $HOME/.screenrc
+
+screen -t vim 0
+stuff "\${PROJECT_EDITOR-\$EDITOR}\012"
+screen -t zsh 1
+screen -t vagrant 2
+stuff "vagrant up && vagrant ssh"
+select vim

@@ -1,9 +1,0 @@
-server_defaults:
-  - server_name: blog.dev
-servers:
-  - config:
-    - listen: 80
-  - config:
-    - listen: 443 ssl
-    - partial: ssl_conf
-    - partial: redirect_to_http
