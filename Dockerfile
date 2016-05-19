@@ -1,4 +1,4 @@
-FROM alphahydrae/nginx-serf-base
+FROM alphahydrae/nginx-serf:base
 
 RUN mkdir -p /opt/nginx-serf
 ADD package.json /opt/nginx-serf/package.json
