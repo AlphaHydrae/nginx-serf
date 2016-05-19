@@ -40,7 +40,7 @@ if (!_.isEmpty(config.serverNames)) {
 
   cleanServers(true);
 } else {
-  fs.writeFileSync('/etc/nginx/conf.d/default.serf.conf', defaultServerTemplate({}), { encoding: 'utf-8' });
+  fs.writeFileSync('/etc/nginx/sites-serf/default.conf', defaultServerTemplate({}), { encoding: 'utf-8' });
   cleanServers(false);
 }
 
@@ -48,20 +48,20 @@ reloadNginx();
 
 function updateServer(name) {
   var templateOptions = _.extend({}, config.servers_template_options[name]);
-  fs.writeFileSync('/etc/nginx/conf.d/' + name + '.serf.conf', config.serverTemplates[name](templateOptions), { encoding: 'utf-8' });
+  fs.writeFileSync('/etc/nginx/sites-serf/' + name + '.conf', config.serverTemplates[name](templateOptions), { encoding: 'utf-8' });
 }
 
 function cleanServers(cleanDefault) {
 
-  var serverConfs = glob.sync('*.serf.conf', { cwd: '/etc/nginx/conf.d' });
+  var serverConfs = glob.sync('*.conf', { cwd: '/etc/nginx/sites-serf' });
 
   var confsToDelete = _.filter(serverConfs, function(filename) {
-    var name = filename.replace(/\.serf\.conf$/, '');
+    var name = filename.replace(/\.conf$/, '');
     return name == 'default' ? !!cleanDefault : !_.includes(config.serverNames, name);
   });
 
   _.each(confsToDelete, function(filename) {
-    fs.unlinkSync('/etc/nginx/conf.d/' + filename);
+    fs.unlinkSync('/etc/nginx/sites-serf/' + filename);
   });
 }
 
@@ -79,7 +79,7 @@ function loadConfig() {
   }
 
   try {
-    config.serverNames = _.map(glob.sync('*.conf.hbs', { cwd: '/etc/nginx-serf/conf.d' }), function(filename) {
+    config.serverNames = _.map(glob.sync('*.conf.hbs', { cwd: '/etc/nginx-serf/sites' }), function(filename) {
       return filename.replace(/\.conf.hbs$/, '');
     });
   } catch (err) {
@@ -87,7 +87,7 @@ function loadConfig() {
   }
 
   config.serverTemplates = _.reduce(config.serverNames, function(memo, name) {
-    memo[name] = handlebars.compile(fs.readFileSync('/etc/nginx-serf/conf.d/' + name + '.conf.hbs', { encoding: 'utf-8' }));
+    memo[name] = handlebars.compile(fs.readFileSync('/etc/nginx-serf/sites/' + name + '.conf.hbs', { encoding: 'utf-8' }));
     return memo;
   }, {});
 

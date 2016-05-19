@@ -1,8 +1,8 @@
 # For more information on configuration, see:
 #   * Official English Documentation: http://nginx.org/en/docs/
 
-user nginx;
-worker_processes {{#if worker_processes}}{{worker_processes}}{{else}}1{{/if}};
+user www-data;
+worker_processes {{#if worker_processes}}{{worker_processes}}{{else}}auto{{/if}};
 daemon off;
 
 error_log /dev/stderr info;
@@ -12,21 +12,42 @@ events {
 }
 
 http {
+
+  ##
+  # Basic Settings
+  ##
+
+  sendfile on;
+  tcp_nopush on;
+  tcp_nodelay on;
+  keepalive_timeout 65;
+  types_hash_max_size 2048;
+  server_tokens off;
+
   include /etc/nginx/mime.types;
   default_type application/octet-stream;
 
-  log_format main '$remote_addr - $remote_user [$time_local] "$request" '
-                  '$status $body_bytes_sent "$http_referer" '
-                  '"$http_user_agent" "$http_x_forwarded_for"';
+  ##
+  # SSL Settings
+  ##
 
-  access_log /dev/stdout main;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+  ssl_prefer_server_ciphers on;
 
-  sendfile on;
-  server_tokens off;
+  ##
+  # Logging Settings
+  ##
 
-  keepalive_timeout 65;
+  access_log /dev/stdout;
+
+  ##
+  # Gzip Settings
+  ##
 
   gzip on;
+  gzip_disable "msie6";
 
   include /etc/nginx/conf.d/*.conf;
+  include /etc/nginx/sites-enabled/*;
+  include /etc/nginx/sites-serf/*;
 }

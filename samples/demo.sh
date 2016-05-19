@@ -18,12 +18,6 @@ fi
 
 cd /vagrant
 
-if ! docker images|grep -e '^alphahydrae\/nginx-serf-base ' &>/dev/null; then
-  echo
-  echo "Building nginx-serf-base image..."
-  docker build -t alphahydrae/nginx-serf-base base
-fi
-
 if ! docker images|grep -e '^alphahydrae\/nginx-serf ' &>/dev/null; then
   echo
   echo "Building nginx-serf image..."
@@ -42,7 +36,7 @@ done
 
 echo
 echo "Launching a serf agent in the 'serf' container..."
-docker run -d --name serf --net demo alphahydrae/nginx-serf /opt/bin/serf agent
+docker run -d --name serf --net demo alphahydrae/nginx-serf-docker-base:1.0.0 /opt/bin/serf agent
 
 echo
 echo "Launching a hello server for Bob in the 'hello-server-1' container..."
@@ -72,7 +66,7 @@ echo
 echo "Launching nginx-serf in the 'nginx-serf' container..."
 docker run \
   --volume /vagrant/samples/config.yml:/etc/nginx-serf/config.yml \
-  --volume /vagrant/samples/conf.d:/etc/nginx-serf/conf.d \
+  --volume /vagrant/samples/sites:/etc/nginx-serf/sites \
   --volume /vagrant/samples/certs:/etc/ssl/private/hello.demo \
   --volume /vagrant/samples/blog:/var/www/blog \
   -e NGINX_SERF_JOIN=serf \
@@ -91,11 +85,11 @@ done
 
 echo
 echo "Printing the hello upstream configuration..."
-docker exec nginx-serf cat /etc/nginx/conf.d/hello.serf.conf | head -n 5 | sed 's/^/  /'
+docker exec nginx-serf cat /etc/nginx/sites-serf/hello.conf | head -n 5 | sed 's/^/  /'
 
 echo
-echo "Running 'curl -k https://hello.demo' 3 times..."
-for i in 1 2 3; do curl -k https://hello.demo; done
+echo "Running 'curl -k https://hello.demo' 4 times..."
+for i in 1 2 3 4; do curl -k https://hello.demo; done
 
 cowsay "The 3 different greetings show that the nginx load balancer has correctly picked up the 3 hello-server containers."
 
@@ -114,7 +108,7 @@ sleep 2
 
 echo
 echo "Printing the hello upstream configuration..."
-docker exec nginx-serf cat /etc/nginx/conf.d/hello.serf.conf | head -n 5 | sed 's/^/  /'
+docker exec nginx-serf cat /etc/nginx/sites-serf/hello.conf | head -n 5 | sed 's/^/  /'
 
 echo
 echo "Running 'curl -k https://hello.demo' 4 times..."

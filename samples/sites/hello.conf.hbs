@@ -1,0 +1,42 @@
+{{#with_members "app=hello"}}
+upstream hello_cluster {
+  {{#each members}}
+  server {{ address }}:3000;
+  {{/each}}
+}
+{{/with_members}}
+
+server {
+  listen 80;
+  server_name hello.demo;
+
+  return 302 https://$server_name$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name hello.demo;
+
+  ssl_certificate /etc/ssl/private/hello.demo/server.crt;
+  ssl_certificate_key /etc/ssl/private/hello.demo/server.key;
+
+  root /var/www/hello;
+
+  location / {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+
+    {{#with_members "app=hello"}}
+    # Pass request to app.
+    if (!-f $request_filename) {
+      proxy_pass http://hello_cluster;
+      break;
+    }
+    {{else}}
+    return 502;
+    {{/with_members}}
+  }
+}
