@@ -36,7 +36,7 @@ done
 
 echo
 echo "Launching a serf agent in the 'serf' container..."
-docker run -d --name serf --net demo alphahydrae/nginx-serf-docker-base:1.0.0 /opt/bin/serf agent
+docker run -d --name serf --net demo alphahydrae/nginx-serf-docker-base:1.0.0 /opt/bin/serf agent --tag foo=bar
 
 echo
 echo "Launching a hello server for Bob in the 'hello-server-1' container..."
@@ -64,11 +64,15 @@ docker ps -a
 
 echo
 echo "Launching nginx-serf in the 'nginx-serf' container..."
+
 docker run \
   --volume /vagrant/samples/config.yml:/etc/nginx-serf/config.yml \
   --volume /vagrant/samples/sites:/etc/nginx-serf/sites \
   --volume /vagrant/samples/certs:/etc/ssl/private/hello.demo \
   --volume /vagrant/samples/blog:/var/www/blog \
+  --volume /vagrant/bin:/opt/nginx-serf/bin \
+  --volume /vagrant/lib:/opt/nginx-serf/lib \
+  --volume /vagrant/templates:/opt/nginx-serf/templates \
   -e NGINX_SERF_JOIN=serf \
   --name nginx-serf \
   --net demo \
@@ -85,10 +89,12 @@ done
 
 echo
 echo "Printing the hello upstream configuration..."
+
 docker exec nginx-serf cat /etc/nginx/sites-serf/hello.conf | head -n 5 | sed 's/^/  /'
 
 echo
 echo "Running 'curl -k https://hello.demo' 4 times..."
+
 for i in 1 2 3 4; do curl -k https://hello.demo; done
 
 cowsay "The 3 different greetings show that the nginx load balancer has correctly picked up the 3 hello-server containers."
@@ -103,15 +109,18 @@ echo "====================================================="
 
 echo
 echo "Stopping 1 hello-server container..."
+
 docker stop hello-server-1 &>/dev/null
 sleep 2
 
 echo
 echo "Printing the hello upstream configuration..."
+
 docker exec nginx-serf cat /etc/nginx/sites-serf/hello.conf | head -n 5 | sed 's/^/  /'
 
 echo
 echo "Running 'curl -k https://hello.demo' 4 times..."
+
 for i in 1 2 3 4; do curl -k https://hello.demo; done
 
 cowsay "The missing hello-server container was automatically removed from the load balancer."

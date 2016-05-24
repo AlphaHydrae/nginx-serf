@@ -22,15 +22,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     apt-get update -qq
     apt-get install -q -y --force-yes linux-image-extra-$(uname -r)
     apt-get install -q -y --force-yes lxc-docker
+    apt-get install -q -y --force-yes cowsay
+
+    usermod -a -G docker vagrant
+    echo "cd /vagrant" >> /home/vagrant/.bash_profile
 
     apt-get install -q -y --force-yes dnsmasq
     echo "address=/demo/127.0.0.1" >> /etc/dnsmasq.conf
     sed -i 's/^#\(prepend *domain-name-servers *127\.0\.0\.1\)/\1/' /etc/dhcp/dhclient.conf
     /etc/init.d/dnsmasq restart
-
-    apt-get install -q -y --force-yes cowsay
-
-    usermod -a -G docker vagrant
-    echo "cd /vagrant" >> /home/vagrant/.bash_profile
   SHELL
 end
