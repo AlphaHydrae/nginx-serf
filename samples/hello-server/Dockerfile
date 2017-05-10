@@ -1,4 +1,4 @@
-FROM alphahydrae/nginx-serf-docker-base:1.0.0
+FROM alphahydrae/nginx-serf-docker-base:2.0.0
 
 RUN mkdir -p /opt/bin
 ADD hello-server.js /opt/bin/

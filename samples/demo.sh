@@ -36,7 +36,7 @@ done
 
 echo
 echo "Launching a serf agent in the 'serf' container..."
-docker run -d --name serf --net demo alphahydrae/nginx-serf-docker-base:1.0.0 /opt/bin/serf agent --tag foo=bar
+docker run -d --name serf --net demo alphahydrae/nginx-serf-docker-base:2.0.0 /opt/bin/serf agent --tag foo=bar
 
 echo
 echo "Launching a hello server for Bob in the 'hello-server-1' container..."
