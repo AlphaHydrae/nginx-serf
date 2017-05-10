@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = 'ubuntu/trusty64'
   config.vm.network 'private_network', ip: '192.168.50.4'
-  config.vm.network 'forwarded_port', guest: 80, host: 3000
+  config.vm.network 'forwarded_port', guest: 80, host: ENV['PORT'] || 3000
 
   config.vm.provider 'virtualbox' do |v|
     v.memory = 2048
