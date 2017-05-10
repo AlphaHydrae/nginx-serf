@@ -9,6 +9,7 @@ sigterm() {
 trap sigterm SIGTERM
 
 COMMAND="/opt/bin/serf agent"
+COMMAND="$COMMAND --bind $(hostname -i)"
 COMMAND="$COMMAND --event-handler user:nginx-serf-reload=/opt/nginx-serf/handle-serf-event.sh"
 COMMAND="$COMMAND --event-handler member-join,member-leave,member-failed,member-update=/opt/nginx-serf/handle-serf-event.sh"
 COMMAND="$COMMAND --config-file /etc/serf.conf"

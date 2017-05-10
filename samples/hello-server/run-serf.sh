@@ -7,6 +7,6 @@ sigterm() {
 
 trap sigterm SIGTERM
 
-/opt/bin/serf agent --join serf --tag role=server --tag app=hello &
+/opt/bin/serf agent --bind $(hostname -i) --join serf --tag role=server --tag app=hello &
 pid=$!
 wait
