@@ -24,6 +24,12 @@ if ! docker images|grep -e '^alphahydrae\/nginx-serf ' &>/dev/null; then
   docker build -t alphahydrae/nginx-serf .
 fi
 
+if ! docker images|grep -e '^serf ' &>/dev/null; then
+  echo
+  echo "Building serf image..."
+  docker build -t serf samples/serf
+fi
+
 if ! docker images|grep -e '^hello-server ' &>/dev/null; then
   echo
   echo "Building hello-server image..."
@@ -36,7 +42,7 @@ done
 
 echo
 echo "Launching a serf agent in the 'serf' container..."
-docker run -d --name serf --net demo alphahydrae/nginx-serf-docker-base:2.0.0 /opt/bin/serf agent --tag foo=bar
+docker run -d --name serf --net demo serf /opt/bin/serf agent --tag foo=bar
 
 echo
 echo "Launching a hello server for Bob in the 'hello-server-1' container..."

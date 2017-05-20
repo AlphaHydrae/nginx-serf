@@ -1,2 +1,2 @@
 #!/usr/bin/with-contenv bash
-/opt/bin/hello-server.js
+exec /opt/bin/hello-server.js
